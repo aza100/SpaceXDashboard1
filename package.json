@@ -25,7 +25,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://gayan_liyanage.github.io/SpaceXDashboard1",
+  "homepage": "https://aza100.github.io/SpaceXDashboard1",
   "eslintConfig": {
     "extends": [
       "react-app",
