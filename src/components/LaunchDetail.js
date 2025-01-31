@@ -32,6 +32,25 @@ function LaunchDetail({ launch }) {
         sx={{ mb: 2 }}
       />
 
+      {launch.links?.webcast && (
+        <Box sx={{ mb: 3 }}>
+          <Paper sx={{ p: 2, background: 'rgba(26, 44, 78, 0.6)' }}>
+            <Typography variant="h6" gutterBottom sx={{ color: '#00f5ff' }}>
+              Watch Launch
+            </Typography>
+            <iframe
+              width="100%"
+              height="315"
+              src={`https://www.youtube.com/embed/${launch.links.webcast.split('v=')[1]}`}
+              title="Launch Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </Paper>
+        </Box>
+      )}
+
       <Typography variant="subtitle1" gutterBottom>
         Launch Date: {new Date(launch.date_utc).toLocaleString()}
       </Typography>
@@ -39,6 +58,29 @@ function LaunchDetail({ launch }) {
       <Divider sx={{ my: 2 }} />
 
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, background: 'rgba(26, 44, 78, 0.6)' }}>
+            <Typography variant="h6" gutterBottom sx={{ color: '#00f5ff' }}>
+              Launch Site Map
+            </Typography>
+            {launch.launchpad_lat && launch.launchpad_long ? (
+              <Box sx={{ width: '100%', height: '300px', borderRadius: 1, overflow: 'hidden' }}>
+                <iframe
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  allowFullScreen
+                  src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${launch.launchpad_lat},${launch.launchpad_long}&zoom=12`}
+                />
+              </Box>
+            ) : (
+              <Typography variant="body1">
+                Launch site coordinates not available
+              </Typography>
+            )}
+          </Paper>
+        </Grid>
         <Grid item xs={12}>
           <Paper sx={{ p: 2, background: 'rgba(26, 44, 78, 0.6)' }}>
             <Typography variant="h6" gutterBottom sx={{ color: '#00f5ff' }}>
@@ -83,25 +125,6 @@ function LaunchDetail({ launch }) {
           </Paper>
         </Grid>
       </Grid>
-
-      {launch.links?.webcast && (
-        <Box sx={{ mt: 2 }}>
-          <Paper sx={{ p: 2, background: 'rgba(26, 44, 78, 0.6)' }}>
-            <Typography variant="h6" gutterBottom sx={{ color: '#00f5ff' }}>
-              Watch Launch
-            </Typography>
-            <iframe
-              width="100%"
-              height="315"
-              src={`https://www.youtube.com/embed/${launch.links.webcast.split('v=')[1]}`}
-              title="Launch Video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </Paper>
-        </Box>
-      )}
     </Box>
   );
 }
