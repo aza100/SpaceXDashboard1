@@ -58,7 +58,7 @@ function LaunchDashboard() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, height: '100vh', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
       <NavBar 
         years={years}
         selectedYear={selectedYear}
@@ -132,7 +132,7 @@ function LaunchDashboard() {
           ))}
         </Stepper>
       </Box>
-      <Box sx={{ display: 'flex', height: 'calc(100% - 160px)' }}>
+      <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
         <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
           <LaunchGrid 
