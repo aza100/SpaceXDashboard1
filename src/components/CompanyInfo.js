@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Box, 
   Typography, 
@@ -7,8 +7,22 @@ import {
   Link
 } from '@mui/material';
 import NavBar from './NavBar';
+import RocketModal from './RocketModal';
 
 function CompanyInfo() {
+  const [selectedRocket, setSelectedRocket] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleRocketClick = (rocket) => {
+    setSelectedRocket(rocket);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedRocket(null);
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <NavBar successFilter="all" onSuccessFilterChange={() => {}} />
@@ -78,10 +92,121 @@ function CompanyInfo() {
               Technologies
             </Typography>
             <Typography variant="body1" component="div">
-              <Box sx={{ mb: 1 }}>• Falcon 9 - Reusable two-stage rocket</Box>
-              <Box sx={{ mb: 1 }}>• Falcon Heavy - Heavy-lift launch vehicle</Box>
-              <Box sx={{ mb: 1 }}>• Dragon - Spacecraft for cargo and crew</Box>
-              <Box>• Starship - Next-generation spacecraft</Box>
+              <Box sx={{ mb: 1 }}>
+                • <Link
+                    component="button"
+                    onClick={() => handleRocketClick({
+                      name: 'Falcon 9',
+                      description: 'Falcon 9 is a reusable, two-stage rocket designed and manufactured by SpaceX for the reliable and safe transport of satellites and the Dragon spacecraft into orbit.',
+                      height: { meters: 70 },
+                      diameter: { meters: 3.7 },
+                      mass: { kg: 549054 },
+                      success_rate_pct: 98,
+                      cost_per_launch: 62000000,
+                      first_flight: '2010-06-04',
+                      stages: 2,
+                      engines: {
+                        type: 'Merlin',
+                        version: '1D+',
+                        thrust_sea_level: { kN: 845 },
+                        thrust_vacuum: { kN: 981 }
+                      },
+                      flickr_images: [
+                        'https://farm1.staticflickr.com/929/28787338307_3453a11a77_b.jpg'
+                      ]
+                    })}
+                    sx={{ color: '#00f5ff', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+                  >
+                    Falcon 9
+                  </Link> - Reusable two-stage rocket
+                </Box>
+              <Box sx={{ mb: 1 }}>
+                • <Link
+                    component="button"
+                    onClick={() => handleRocketClick({
+                      name: 'Falcon Heavy',
+                      description: 'Falcon Heavy is the most powerful operational rocket in the world by a factor of two. With the ability to lift into orbit nearly 64 metric tons (141,000 lb), Falcon Heavy can lift more than twice the payload of the next closest operational vehicle, the Delta IV Heavy.',
+                      height: { meters: 70 },
+                      diameter: { meters: 12.2 },
+                      mass: { kg: 1420788 },
+                      success_rate_pct: 100,
+                      cost_per_launch: 90000000,
+                      first_flight: '2018-02-06',
+                      stages: 3,
+                      engines: {
+                        type: 'Merlin',
+                        version: '1D+',
+                        thrust_sea_level: { kN: 845 },
+                        thrust_vacuum: { kN: 981 }
+                      },
+                      flickr_images: [
+                        'https://farm5.staticflickr.com/4615/40143096241_11128929df_b.jpg'
+                      ]
+                    })}
+                    sx={{ color: '#00f5ff', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+                  >
+                    Falcon Heavy
+                  </Link> - Heavy-lift launch vehicle
+                </Box>
+              <Box sx={{ mb: 1 }}>
+                • <Link
+                    component="button"
+                    onClick={() => handleRocketClick({
+                      name: 'Dragon',
+                      description: 'Dragon is a free-flying spacecraft designed to deliver both cargo and people to orbiting destinations. Dragon made history in 2012 when it became the first commercial spacecraft to deliver cargo to the International Space Station.',
+                      height: { meters: 8.1 },
+                      diameter: { meters: 4 },
+                      mass: { kg: 6000 },
+                      success_rate_pct: 100,
+                      cost_per_launch: 0,
+                      first_flight: '2010-12-08',
+                      stages: 0,
+                      engines: {
+                        type: 'Draco',
+                        version: '2.0',
+                        thrust_sea_level: { kN: 0.4 },
+                        thrust_vacuum: { kN: 0.4 }
+                      },
+                      flickr_images: [
+                        'https://farm8.staticflickr.com/7647/16581815487_6d56cb32e1_b.jpg'
+                      ]
+                    })}
+                    sx={{ color: '#00f5ff', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+                  >
+                    Dragon
+                  </Link> - Spacecraft for cargo and crew
+                </Box>
+              <Box>
+                • <Link
+                    component="button"
+                    onClick={() => handleRocketClick({
+                      name: 'Starship',
+                      description: 'Starship and Super Heavy Rocket represent a fully reusable ' +
+                        'transportation system designed to carry both crew and cargo to Earth orbit, ' +
+                        'the Moon, Mars and beyond. Starship will be the world\'s most powerful ' +
+                        'launch vehicle ever developed.',
+                      height: { meters: 120 },
+                      diameter: { meters: 9 },
+                      mass: { kg: 5000000 },
+                      success_rate_pct: 0,
+                      cost_per_launch: 2000000,
+                      first_flight: 'In Development',
+                      stages: 2,
+                      engines: {
+                        type: 'Raptor',
+                        version: '2.0',
+                        thrust_sea_level: { kN: 2200 },
+                        thrust_vacuum: { kN: 2600 }
+                      },
+                      flickr_images: [
+                        'https://live.staticflickr.com/65535/48954138962_ee541e6755_b.jpg'
+                      ]
+                    })}
+                    sx={{ color: '#00f5ff', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+                  >
+                    Starship
+                  </Link> - Next-generation spacecraft
+                </Box>
             </Typography>
           </Paper>
         </Grid>
@@ -105,6 +230,11 @@ function CompanyInfo() {
         </Grid>
       </Grid>
       </Box>
+      <RocketModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        rocket={selectedRocket}
+      />
     </Box>
   );
 }
