@@ -11,6 +11,9 @@ function LaunchDashboard() {
   const [selectedYear, setSelectedYear] = useState(null);
   const [years, setYears] = useState([]);
   const [successFilter, setSuccessFilter] = useState('all');
+  const [yearSuccessRates, setYearSuccessRates] = useState({});
+
+  const [yearLaunchCounts, setYearLaunchCounts] = useState({});
 
   useEffect(() => {
     const getLaunches = async () => {
@@ -19,11 +22,29 @@ function LaunchDashboard() {
       if (data.length > 0) {
         setSelectedLaunch(data[0]);
         
-        // Extract unique years from launches
-        const uniqueYears = [...new Set(data.map(launch => 
-          new Date(launch.date_utc).getFullYear()
-        ))].sort((a, b) => b - a);
+        // Extract unique years and count launches per year
+        const yearCounts = {};
+        const uniqueYears = [...new Set(data.map(launch => {
+          const year = new Date(launch.date_utc).getFullYear();
+          yearCounts[year] = (yearCounts[year] || 0) + 1;
+          return year;
+        }))].sort((a, b) => b - a);
+        
         setYears(uniqueYears);
+        setYearLaunchCounts(yearCounts);
+
+        // Calculate success rates for each year
+        const successRates = {};
+        uniqueYears.forEach(year => {
+          const yearLaunches = data.filter(launch => 
+            new Date(launch.date_utc).getFullYear() === year
+          );
+          const successfulLaunches = yearLaunches.filter(launch => launch.success);
+          successRates[year] = yearLaunches.length > 0 
+            ? (successfulLaunches.length / yearLaunches.length)
+            : 0;
+        });
+        setYearSuccessRates(successRates);
       }
     };
     getLaunches();
@@ -33,12 +54,34 @@ function LaunchDashboard() {
     const yearMatch = selectedYear === null || 
       new Date(launch.date_utc).getFullYear() === selectedYear;
     const successMatch = successFilter === 'all' || 
-      (successFilter === 'success' && launch.success === true);
+      (successFilter === 'success' && launch.success === true) ||
+      (successFilter === 'crewed' && launch.crew?.length > 0);
     return yearMatch && successMatch;
   });
 
-  const [drawerWidth, setDrawerWidth] = useState(window.innerWidth * 0.5);
+  // Update selected launch when year or filter changes
+  useEffect(() => {
+    if (filteredLaunches.length > 0) {
+      // Sort launches by date (newest first)
+      const sortedLaunches = [...filteredLaunches].sort((a, b) => 
+        new Date(b.date_utc) - new Date(a.date_utc)
+      );
+      
+      // Check if current selection exists in filtered results
+      const currentSelectionExists = selectedLaunch && 
+        filteredLaunches.some(launch => launch.id === selectedLaunch.id);
+
+      // Only update selection if current selection is not in filtered results
+      if (!currentSelectionExists) {
+        setSelectedLaunch(sortedLaunches[0]);
+      }
+      setIsDrawerOpen(true);
+    }
+  }, [selectedYear, successFilter, filteredLaunches]);
+
+  const [drawerWidth, setDrawerWidth] = useState(window.innerWidth * 0.666);
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isGridMinimized, setIsGridMinimized] = useState(false);
 
   const handleMouseDown = (e) => {
     document.addEventListener('mousemove', handleMouseMove);
@@ -58,7 +101,7 @@ function LaunchDashboard() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, height: '100vh', overflow: 'hidden' }}>
+    <Box sx={{ flexGrow: 1, height: '100vh', overflow: 'hidden', background: 'linear-gradient(180deg, #0a192f 0%, #0d2444 100%)' }}>
       <NavBar 
         years={years}
         selectedYear={selectedYear}
@@ -66,18 +109,18 @@ function LaunchDashboard() {
         successFilter={successFilter}
         onSuccessFilterChange={setSuccessFilter}
       />
-      <Box sx={{ px: 4, py: 4, background: 'transparent', mb: 0 }}>
+      <Box sx={{ px: 4, py: 2, background: 'transparent', mb: 0 }}>
         <Stepper 
           nonLinear 
           alternativeLabel
           connector={null}
           sx={{
-            py: 1,
-            minHeight: '60px',
+            py: 0.5,
+            minHeight: '48px',
             '& .MuiStepLabel-label': {
               color: 'rgba(255,255,255,0.5)',
               fontSize: '0.9rem',
-              marginTop: '8px',
+              marginTop: 0,
               '&.Mui-active': { 
                 color: '#00f5ff',
                 fontWeight: 600,
@@ -85,33 +128,14 @@ function LaunchDashboard() {
               }
             },
             '& .MuiStepIcon-root': {
-              color: 'rgba(255,255,255,0.2)',
-              width: '28px',
-              height: '28px',
-              '&.Mui-active': {
-                color: '#00f5ff',
-                filter: 'drop-shadow(0 0 4px #00f5ff)',
-                background: 'radial-gradient(circle at center, rgba(0,245,255,0.3) 0%, transparent 70%)',
-                borderRadius: '50%',
-                transform: 'scale(1.1)'
-              },
-              '&.Mui-completed': {
-                color: 'rgba(0,245,255,0.5)'
-              },
-              '& .MuiStepIcon-text': {
-                display: 'none'
-              }
+              display: 'none'
             },
             '& .MuiStepButton-root': {
-              padding: '8px 16px',
+              padding: '6px 12px',
               borderRadius: 1,
               transition: 'all 0.2s ease-in-out',
               '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.05)',
-                '& .MuiStepIcon-root': {
-                  color: 'rgba(0,245,255,0.3)',
-                  transform: 'scale(1.05)'
-                }
+                backgroundColor: 'rgba(255,255,255,0.05)'
               },
               '&.Mui-active': {
                 backgroundColor: 'rgba(0,245,255,0.1)'
@@ -132,9 +156,79 @@ function LaunchDashboard() {
           ))}
         </Stepper>
       </Box>
-      <Box sx={{ display: 'flex', height: 'calc(100% - 160px)' }}>
-
-        <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
+      <Box sx={{ display: 'flex', height: 'calc(100% - 160px)', position: 'relative', '&::before': { content: '""', position: 'absolute', top: 0, left: '5%', right: '5%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(0,245,255,0.1), transparent)' } }}>
+        <Box sx={{ 
+          flexGrow: 1, 
+          overflow: 'hidden',
+          transition: 'width 0.3s ease-in-out',
+          width: isGridMinimized ? '120px' : 'auto',
+          position: 'relative'
+        }}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+              zIndex: 10,
+              display: 'flex',
+              gap: 1,
+              background: 'rgba(26, 44, 78, 0.9)',
+              padding: '4px',
+              borderRadius: '20px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              backdropFilter: 'blur(8px)'
+            }}
+          >
+            <Box
+              onClick={() => setIsGridMinimized(true)}
+              sx={{
+                width: 32,
+                height: 32,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                borderRadius: '50%',
+                backgroundColor: isGridMinimized ? 'rgba(0,245,255,0.2)' : 'transparent',
+                color: isGridMinimized ? '#00f5ff' : 'rgba(255,255,255,0.7)',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,245,255,0.1)',
+                  transform: 'scale(1.1)'
+                },
+                '&::before': {
+                  content: '"⋮"',
+                  fontSize: '20px',
+                  lineHeight: 1
+                }
+              }}
+            />
+            <Box
+              onClick={() => setIsGridMinimized(false)}
+              sx={{
+                width: 32,
+                height: 32,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                borderRadius: '50%',
+                backgroundColor: !isGridMinimized ? 'rgba(0,245,255,0.2)' : 'transparent',
+                color: !isGridMinimized ? '#00f5ff' : 'rgba(255,255,255,0.7)',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,245,255,0.1)',
+                  transform: 'scale(1.1)'
+                },
+                '&::before': {
+                  content: '"▦"',
+                  fontSize: '18px',
+                  lineHeight: 1
+                }
+              }}
+            />
+          </Box>
           <LaunchGrid 
             launches={filteredLaunches}
             selectedLaunch={selectedLaunch}
@@ -142,6 +236,7 @@ function LaunchDashboard() {
               setSelectedLaunch(launch);
               setIsDrawerOpen(true);
             }}
+            isGridMinimized={isGridMinimized}
           />
         </Box>
         <Drawer

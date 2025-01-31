@@ -61,6 +61,9 @@ function NavBar({ successFilter, onSuccessFilterChange }) {
             <ToggleButton value="success">
               Success Only
             </ToggleButton>
+            <ToggleButton value="crewed">
+              Crewed Missions
+            </ToggleButton>
           </ToggleButtonGroup>
         </Box>
       </Toolbar>
