@@ -23,7 +23,7 @@ function LaunchGrid({ launches, selectedLaunch, onSelectLaunch, isGridMinimized 
   };
 
   return (
-    <Paper sx={{ height: '100vh', overflow: 'auto', p: 2, '&::-webkit-scrollbar': { width: '8px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '4px' } }}>
+    <Paper sx={{ height: '100%', overflow: 'auto', p: 2, '&::-webkit-scrollbar': { width: '8px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '4px' } }}>
       <Grid container spacing={2}>
         {sortedLaunches.map((launch) => (
           <Grid item 

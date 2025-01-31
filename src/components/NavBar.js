@@ -7,6 +7,7 @@ import {
   ToggleButton,
   ToggleButtonGroup
 } from '@mui/material';
+import spacexLogo from '../assets/spacex-logo.svg';
 
 function NavBar({ successFilter, onSuccessFilterChange }) {
   return (
@@ -20,19 +21,21 @@ function NavBar({ successFilter, onSuccessFilterChange }) {
           alignItems: 'center', 
           flexGrow: 1 
         }}>
-          <Typography
-            variant="h6"
+          <Box
+            component="img"
+            src={spacexLogo}
+            alt="SpaceX"
             sx={{
-              background: 'linear-gradient(45deg, #00f5ff 30%, #7b1fa2 90%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              fontWeight: 'bold',
-              fontSize: '1.5rem',
-              mr: 2
+              height: '20px',
+              width: 'auto',
+              mr: 2,
+              filter: 'brightness(1)',
+              transition: 'filter 0.3s ease-in-out',
+              '&:hover': {
+                filter: 'brightness(1.2)'
+              }
             }}
-          >
-            SpaceX Launch Dashboard
-          </Typography>
+          />
         </Box>
 
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>

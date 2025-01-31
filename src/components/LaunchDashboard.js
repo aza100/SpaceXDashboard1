@@ -4,15 +4,24 @@ import LaunchGrid from './LaunchGrid';
 import LaunchDetail from './LaunchDetail';
 import NavBar from './NavBar';
 import { fetchLaunches } from '../services/spaceXApi';
+import { useSearchParams } from 'react-router-dom';
 
 function LaunchDashboard() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [launches, setLaunches] = useState([]);
   const [selectedLaunch, setSelectedLaunch] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(searchParams.get('year') ? parseInt(searchParams.get('year')) : null);
   const [years, setYears] = useState([]);
-  const [successFilter, setSuccessFilter] = useState('all');
-  const [yearSuccessRates, setYearSuccessRates] = useState({});
+  const [successFilter, setSuccessFilter] = useState(searchParams.get('filter') || 'all');
 
+  const updateUrlParams = (year, filter) => {
+    const params = new URLSearchParams();
+    if (year) params.set('year', year.toString());
+    if (filter && filter !== 'all') params.set('filter', filter);
+    setSearchParams(params);
+  };
+
+  const [yearSuccessRates, setYearSuccessRates] = useState({});
   const [yearLaunchCounts, setYearLaunchCounts] = useState({});
 
   useEffect(() => {
@@ -79,7 +88,7 @@ function LaunchDashboard() {
     }
   }, [selectedYear, successFilter, filteredLaunches]);
 
-  const [drawerWidth, setDrawerWidth] = useState(window.innerWidth * 0.666);
+  const [drawerWidth, setDrawerWidth] = useState(window.innerWidth * 0.6);
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   const [isGridMinimized, setIsGridMinimized] = useState(false);
 
@@ -101,13 +110,19 @@ function LaunchDashboard() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, height: '100vh', overflow: 'hidden', background: 'linear-gradient(180deg, #0a192f 0%, #0d2444 100%)' }}>
+    <Box sx={{ flexGrow: 1, height: '100vh', overflow: 'hidden' }}>
       <NavBar 
         years={years}
         selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
+        onYearChange={(year) => {
+          setSelectedYear(year);
+          updateUrlParams(year, successFilter);
+        }}
         successFilter={successFilter}
-        onSuccessFilterChange={setSuccessFilter}
+        onSuccessFilterChange={(filter) => {
+          setSuccessFilter(filter);
+          updateUrlParams(selectedYear, filter);
+        }}
       />
       <Box sx={{ px: 4, py: 2, background: 'transparent', mb: 0 }}>
         <Stepper 
@@ -149,7 +164,10 @@ function LaunchDashboard() {
               completed={false}
               active={selectedYear === year}
             >
-              <StepButton onClick={() => setSelectedYear(year)}>
+              <StepButton onClick={() => {
+                setSelectedYear(year);
+                updateUrlParams(year, successFilter);
+              }}>
                 {year}
               </StepButton>
             </Step>
