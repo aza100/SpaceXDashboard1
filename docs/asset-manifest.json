@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "./static/css/main.551816ac.css",
-    "main.js": "./static/js/main.28cb7cd8.js",
-    "index.html": "./index.html",
-    "main.551816ac.css.map": "./static/css/main.551816ac.css.map",
-    "main.28cb7cd8.js.map": "./static/js/main.28cb7cd8.js.map"
+    "main.css": "/SpaceXDashboard1/static/css/main.551816ac.css",
+    "main.js": "/SpaceXDashboard1/static/js/main.d6388788.js",
+    "index.html": "/SpaceXDashboard1/index.html",
+    "main.551816ac.css.map": "/SpaceXDashboard1/static/css/main.551816ac.css.map",
+    "main.d6388788.js.map": "/SpaceXDashboard1/static/js/main.d6388788.js.map"
   },
   "entrypoints": [
     "static/css/main.551816ac.css",
-    "static/js/main.28cb7cd8.js"
+    "static/js/main.d6388788.js"
   ]
 }
