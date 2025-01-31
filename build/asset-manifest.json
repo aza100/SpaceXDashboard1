@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/SpaceXDashboard1/static/css/main.551816ac.css",
+    "main.js": "/SpaceXDashboard1/static/js/main.ee6951f6.js",
+    "index.html": "/SpaceXDashboard1/index.html",
+    "main.551816ac.css.map": "/SpaceXDashboard1/static/css/main.551816ac.css.map",
+    "main.ee6951f6.js.map": "/SpaceXDashboard1/static/js/main.ee6951f6.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.551816ac.css",
+    "static/js/main.ee6951f6.js"
+  ]
+}
