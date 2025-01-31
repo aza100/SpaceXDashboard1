@@ -1,0 +1,71 @@
+import React from 'react';
+import { 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  Box,
+  ToggleButton,
+  ToggleButtonGroup
+} from '@mui/material';
+
+function NavBar({ successFilter, onSuccessFilterChange }) {
+  return (
+    <AppBar position="static" sx={{ 
+      background: 'rgba(26, 44, 78, 0.8)',
+      backdropFilter: 'blur(10px)'
+     }}>
+      <Toolbar sx={{ minHeight: '56px' }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          flexGrow: 1 
+        }}>
+          <Typography
+            variant="h6"
+            sx={{
+              background: 'linear-gradient(45deg, #00f5ff 30%, #7b1fa2 90%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 'bold',
+              fontSize: '1.5rem',
+              mr: 2
+            }}
+          >
+            SpaceX Launch Dashboard
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <ToggleButtonGroup
+            value={successFilter}
+            exclusive
+            onChange={(e, value) => onSuccessFilterChange(value)}
+            size="small"
+            sx={{
+              height: '32px',
+              '& .MuiToggleButton-root': {
+                color: 'white',
+                borderColor: 'rgba(255, 255, 255, 0.23)',
+                padding: '4px 12px',
+                fontSize: '0.8125rem',
+                '&.Mui-selected': {
+                  backgroundColor: 'rgba(0, 245, 255, 0.2)',
+                  color: '#00f5ff'
+                }
+              }
+            }}
+          >
+            <ToggleButton value="all">
+              All
+            </ToggleButton>
+            <ToggleButton value="success">
+              Success Only
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
+}
+
+export default NavBar;
