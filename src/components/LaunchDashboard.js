@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, Paper, Drawer, Stepper, Step, StepLabel, StepButton } from '@mui/material';
+import { Box, Drawer, Stepper, Step, StepButton } from '@mui/material';
 import LaunchGrid from './LaunchGrid';
 import LaunchDetail from './LaunchDetail';
-import NavBar from './NavBar';
 import { fetchLaunches } from '../services/spaceXApi';
+import NavBar from './NavBar';
 
 function LaunchDashboard() {
   const [launches, setLaunches] = useState([]);
   const [selectedLaunch, setSelectedLaunch] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
   const [years, setYears] = useState([]);
-  const [successFilter, setSuccessFilter] = useState('all');
+  const [successFilter, setSuccessFilter] = useState('success');
+
+  useEffect(() => {
+    if (years.length > 0 && selectedYear === null) {
+      setSelectedYear(years[0]);
+    }
+  }, [years, selectedYear]);
 
   useEffect(() => {
     const getLaunches = async () => {
@@ -60,11 +66,8 @@ function LaunchDashboard() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
       <NavBar 
-        years={years}
-        selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
         successFilter={successFilter}
-        onSuccessFilterChange={setSuccessFilter}
+        onSuccessFilterChange={(value) => setSuccessFilter(value || 'all')}
       />
       <Box sx={{ px: 4, py: 4, background: 'transparent', mb: 0 }}>
         <Stepper 
@@ -133,7 +136,6 @@ function LaunchDashboard() {
         </Stepper>
       </Box>
       <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-
         <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
           <LaunchGrid 
             launches={filteredLaunches}

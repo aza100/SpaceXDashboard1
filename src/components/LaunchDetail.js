@@ -71,6 +71,7 @@ function LaunchDetail({ launch }) {
                   style={{ border: 0 }}
                   loading="lazy"
                   allowFullScreen
+                  title="Launch Site Location"
                   src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${launch.launchpad_lat},${launch.launchpad_long}&zoom=12`}
                 />
               </Box>
